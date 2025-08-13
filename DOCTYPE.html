@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>for my cutesy bf.exe</title>
+<style>
+  :root {
+    --max-size: 1080px;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: #fcd6e3;
+  }
+  body {
+    display: grid;
+    place-items: center;
+  }
+
+  .app {
+    position: relative;
+    width: min(var(--max-size), 92vmin);
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .hidden { display: none; }
+
+  /* Button images */
+  .btn {
+    position: absolute;
+    cursor: pointer;
+    max-width: 40%;  /* responsive size */
+    height: auto;
+    transition: none; /* instant jump, no lag */
+  }
+
+  /* Default positions for Screen 1 buttons */
+  #btn-yes1 { left: 13%; top: 70%; }
+  #btn-no1  { left: 50%; top: 70%; }
+
+  /* Default position for Screen 2 button */
+  #btn-yes2 { left: 30%; top: 70%; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- Screen 1 -->
+  <div class="screen" id="screen1" style="background-image:url('1.png');">
+    <img src="yes.png" class="btn" id="btn-yes1" alt="Yes">
+    <img src="no.png"  class="btn" id="btn-no1"  alt="No">
+  </div>
+
+  <!-- Screen 2 -->
+  <div class="screen hidden" id="screen2" style="background-image:url('2.png');">
+    <img src="yes.png" class="btn" id="btn-yes2" alt="Yes">
+  </div>
+</div>
+
+<script>
+const screen1 = document.getElementById('screen1');
+const screen2 = document.getElementById('screen2');
+const yes1 = document.getElementById('btn-yes1');
+const no1  = document.getElementById('btn-no1');
+
+yes1.addEventListener('click', () => {
+  screen1.classList.add('hidden');
+  screen2.classList.remove('hidden');
+});
+
+let moving = false;
+
+// Move "No" button when mouse gets close
+document.getElementById('app').addEventListener('mousemove', (e) => {
+  const rect = no1.getBoundingClientRect();
+  const distance = Math.hypot(
+    e.clientX - (rect.left + rect.width / 2),
+    e.clientY - (rect.top + rect.height / 2)
+  );
+
+  if (distance < 80 && !moving) { // trigger when within 80px
+    moveNoButton();
+  }
+});
+
+function moveNoButton() {
+  moving = true;
+
+  const app = document.getElementById('app');
+  const rect = app.getBoundingClientRect();
+  const btnW = no1.offsetWidth;
+  const btnH = no1.offsetHeight;
+
+  const padding = 10;
+  const maxX = rect.width - btnW - padding;
+  const maxY = rect.height - btnH - padding;
+
+  const x = padding + Math.random() * maxX;
+  const y = padding + Math.random() * maxY;
+
+  no1.style.left = (x / rect.width) * 100 + '%';
+  no1.style.top  = (y / rect.height) * 100 + '%';
+
+  setTimeout(() => moving = false, 200); // cooldown
+}
+</script>
+
+</body>
+</html>
